@@ -1,7 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const Cart = require('../model/cart')
-const {verifyToken, verifyTokenandAuthorization , verifytokenAndAdmin} = require('../routes/verify')
+const {verifyToken, verifyTokenandAuthorization , verifytokenAndAdmin} = require('./verify')
 
 router.post('/', verifyTokenandAuthorization, async (req, res) => {
     const newCart = new Cart(req.body)

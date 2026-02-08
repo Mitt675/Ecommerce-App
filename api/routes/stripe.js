@@ -20,7 +20,7 @@ router.post('/create-checkout-session', async (req, res) => {
         },
       ],
       // these URLs must be reachable from your browser
-      success_url: 'http://localhost:5173/success',
+      success_url: 'https://ecommerce-s-reactside.vercel.app/success',
       cancel_url: 'http://localhost:5173/cancel',
     });
 
@@ -32,3 +32,6 @@ router.post('/create-checkout-session', async (req, res) => {
 });
 
 module.exports = router;
+
+
+
