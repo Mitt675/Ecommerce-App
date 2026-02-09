@@ -3,22 +3,37 @@ const router = express.Router()
 const Order = require('../model/order')
 const { verifyToken, verifyTokenandAuthorization, verifytokenAndAdmin } = require('./verify')
 const { route } = require('./cart')
+const { findOne } = require('../model/user')
+const {calculateCartTotal} = require('../utilis/calculateCartTotal')
 
 //to create a new order
 router.post('/', verifyToken, async (req, res) => {
-   try { const newOrder = new Order({
-        userId : req.user.id,
-        address : req.body.address,
-        products : req.body.products,
-        amount : req.body.amount
-    })
+  try{
+    const cart = await Cart.findOne({userId: req.user.id})
     
-        const savedOrder = await newOrder.save()
-        res.status(201).json(savedOrder)
+    if(!cart || cart.products.length === 0){
+        return res.status(400).json('cart is empty')
     }
-    catch (err) {
-        res.status(500).json(err)
-    }
+     
+    const amount = await calculateCartTotal(cart.products)
+
+    const newOrder = new Order({
+        userId : req.user.id,
+        products : cart.products, amount,  // or calculate it
+        address : req.body.address,
+        status : 'pending'
+    })
+
+    const savedOrder = await newOrder.save()
+
+    cart.products = []
+    await cart.save()
+    
+    return res.status(201).json(savedOrder)
+    
+  } catch(err){
+      res.status(500).json(err)
+  }
 })
 //to update an order
 router.put('/:id', verifytokenAndAdmin, async (req, res) => {
