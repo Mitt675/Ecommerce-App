@@ -6,8 +6,13 @@ const { route } = require('./cart')
 
 //to create a new order
 router.post('/', verifyToken, async (req, res) => {
-    const newOrder = new Order(req.body)
-    try {
+   try { const newOrder = new Order({
+        userId : req.user.id,
+        address : req.body.address,
+        products : req.body.products,
+        amount : req.body.amount
+    })
+    
         const savedOrder = await newOrder.save()
         res.status(201).json(savedOrder)
     }
@@ -36,8 +41,12 @@ router.delete('/:id', verifytokenAndAdmin, async (req, res) => {
     }
 })
 //to get all orders of a user
-router.get('/find/:userId', verifyTokenandAuthorization, async (req, res) => {
+router.get('/find/:userId', verifyToken , async (req, res) => {
     try {
+        if(req.user.id !== req.params.id && req.body.isAdmin){
+            return res.status(403).json('Not authorized')
+        }
+
         const orders = await Order.find({ userId: req.params.userId })
         res.status(200).json(orders)
     }
