@@ -1,7 +1,7 @@
 const product = require('../model/product')
 const Product = require('../model/product')
 
-const calculateCartTotal = async (cartProducts){
+const calculateCartTotal = async (cartProducts)=>{
   let total = 0 
 
   for (const item of cartProducts){
