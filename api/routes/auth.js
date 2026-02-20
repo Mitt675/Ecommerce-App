@@ -5,7 +5,14 @@ const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 
 router.post('/register', async (req, res) => {
+
+        if(!req.body){
+            return res.status(400).json('body is missing ')
+            console.log('require body');
+        }
+
     const { username, email, password } = req.body
+    console.log(req.body);
     if (!username || !email || !password) {
         return res.status(400).json({ error: 'username, email, password are required' })
     }
@@ -13,7 +20,7 @@ router.post('/register', async (req, res) => {
         const saltRounds = 10
         const hashedPassword = await bcryptjs.hash(password, saltRounds)
         const existingCount = await User.countDocuments()
-        const newUser = new User({ username, email, password: hashedPassword,isAdmin: true })
+        const newUser = new User({ username, email, password: hashedPassword})
         const savedUser = await newUser.save()
         const { password: _pw, ...userWithoutPassword } = savedUser.toObject()
         const jwtSecret = process.env.JWT_SECRET

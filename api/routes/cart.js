@@ -7,6 +7,7 @@ const { verify } = require('jsonwebtoken')
 router.post('/', verifyToken, async (req, res) => {
 try {
     const existingcart = await Cart.findOne({userId : req.user.id})
+   
 
     if(existingcart){
         res.status(400).json('cart already exist')
@@ -20,13 +21,13 @@ try {
     })
     
         const savedCart = await newCart.save()
-        res.status(200).json(savedCart)
+        res.status(201).json(savedCart)
     }
     catch (err) {
         res.status(500).json(err)
     }
 })
-router.put('/:id', verifytoken , async (req, res) => {
+router.put('/:id', verifyToken , async (req, res) => {
     try {
         const updatedCart = await Cart.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true })
         res.status(200).json(updatedCart)
@@ -35,7 +36,7 @@ router.put('/:id', verifytoken , async (req, res) => {
         res.status(500).json(err)
     }
 })
-router.delete('/:id', verifytoken , async (req, res) => {
+router.delete('/:id', verifyToken , async (req, res) => {
     try {
         const deltedCart = await Cart.findByIdAndDelete(req.params.id)
         res.status(200).json("your cart has been delted succefully")

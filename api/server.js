@@ -17,14 +17,18 @@ if (!process.env.MONGO_URI || !process.env.JWT_SECRET || !process.env.PORT) {
 }
 
 
+
 app.use(express.json())
 app.use(cors())
-app.use('/api/users', userRouter)
+
+
 app.use('/api/auth', authRoute)
+app.use('/api/stripe' , stripeRoute)
+app.use('/api/users', userRouter)
 app.use('/api/products', productRoute)
 app.use('/api/carts', cartRoute)
 app.use('/api/orders', oderRoute)
-app.use('/api/stripe' , stripeRoute)
+
 
 mongoose.connect(process.env.MONGO_URI)
     .then(() => console.log('Database is connected'))

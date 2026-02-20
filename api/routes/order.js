@@ -5,17 +5,22 @@ const { verifyToken, verifyTokenandAuthorization, verifytokenAndAdmin } = requir
 const { route } = require('./cart')
 const { findOne } = require('../model/user')
 const {calculateCartTotal} = require('../utilis/calculateCartTotal')
+const Cart = require('../model/cart')
 
 //to create a new order
 router.post('/', verifyToken, async (req, res) => {
   try{
     const cart = await Cart.findOne({userId: req.user.id})
+    console.log('User' , req.user.id);
+    console.log('Cart', cart);
+    console.log('Cart Products', cart.products);
     
     if(!cart || cart.products.length === 0){
         return res.status(400).json('cart is empty')
     }
      
     const amount = await calculateCartTotal(cart.products)
+
 
     const newOrder = new Order({
         userId : req.user.id,
@@ -32,6 +37,7 @@ router.post('/', verifyToken, async (req, res) => {
     return res.status(201).json(savedOrder)
     
   } catch(err){
+    console.log(err);
       res.status(500).json(err)
   }
 })
